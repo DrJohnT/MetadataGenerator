@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29905.134
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "MetadataDB", "Databases\MetadataDB\MetadataDB.sqlproj", "{561040D6-D20E-4DC3-8E22-C5534D84B4BC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Generator", "CSharp\Generator\Generator.csproj", "{13D471F7-1446-4555-8DAF-C77280B61F82}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{561040D6-D20E-4DC3-8E22-C5534D84B4BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{561040D6-D20E-4DC3-8E22-C5534D84B4BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{561040D6-D20E-4DC3-8E22-C5534D84B4BC}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{561040D6-D20E-4DC3-8E22-C5534D84B4BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{561040D6-D20E-4DC3-8E22-C5534D84B4BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{561040D6-D20E-4DC3-8E22-C5534D84B4BC}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{13D471F7-1446-4555-8DAF-C77280B61F82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13D471F7-1446-4555-8DAF-C77280B61F82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13D471F7-1446-4555-8DAF-C77280B61F82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13D471F7-1446-4555-8DAF-C77280B61F82}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {126588DF-902C-4D8B-A062-460AF3BF65DD}
+	EndGlobalSection
+EndGlobal
