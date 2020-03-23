@@ -45,7 +45,8 @@ namespace Generator
                 WHERE A.DatabaseUse = 'SOURCE' 
                 ";
 
-                DirectoryInfo dirDmTables = Utilities.GetAndCleanOutputDir("EssentialsAccountsDB", "eaDataMart", "Tables");
+                string dataMartSchemaName = "eaDataMart";
+                DirectoryInfo dirDmTables = Utilities.GetAndCleanOutputDir("EssentialsAccountsDB", dataMartSchemaName, "Tables");
 
                 List<DatabaseInfo> databases = conn.Query<DatabaseInfo>(sql).ToList();
                 foreach (DatabaseInfo database in databases)
@@ -72,10 +73,9 @@ namespace Generator
                             table.StagingAreaSchema = schema.StagingAreaSchema; // ensure this is populated
                             CreateStgTableScript(database, table, dirTables);
 
-                            // CreateDataTranslationViews(database, table, dirViews);
+                            CreateDataTranslationViews(database, table, dirViews);
 
-                            //if (dm.Database.DatabaseGroup == "MDFL")
-                            //    CreateDmTableScript(database, table, dirDmTables, "dm");
+                            CreateDmTableScript(database, table, dirDmTables, dataMartSchemaName);
                         }
                     }
                 }
@@ -127,8 +127,8 @@ namespace Generator
 
             // add LoadLogId and DatabaseInfoId columns
             sb.AppendLine("\t[LoadLogId] bigint not null,");
-            sb.AppendLine("\t[DatabaseInfoId] int not null,");
-            sb.AppendLine("\t[DatabaseGroupId] int not null,");
+//            sb.AppendLine("\t[DatabaseInfoId] int not null,");
+//            sb.AppendLine("\t[DatabaseGroupId] int not null,");
 
             foreach (DatabaseColumn column in table.Columns.Where(x => x.UseColumn).OrderBy(x => x.DatabaseColumnName))
             {
@@ -140,7 +140,7 @@ namespace Generator
                 sb.AppendLine(",");
             }
             sb.AppendLine(") on [PRIMARY] with (data_compression = page);");
-            string sqlPath = Path.Combine(dirDmTables.FullName, table.StagingAreaSchema + "_" + table.TargetObjectName + ".sql");
+            string sqlPath = Path.Combine(dirDmTables.FullName, table.TargetObjectName + ".sql");
             //Console.WriteLine("Writing Table {0}", sqlPath);
             Console.Write("t");
             System.IO.File.WriteAllText(sqlPath, sb.ToString());
@@ -163,21 +163,21 @@ namespace Generator
             // add LoadLogId column
             sb.AppendLine("\t-- system fields");
             sb.AppendLine("\t[LoadLogId],");
-            sb.AppendLine("\t[DatabaseInfoId],");
-            sb.AppendLine("\t[DatabaseGroupId],");
+//            sb.AppendLine("\t[DatabaseInfoId],");
+//            sb.AppendLine("\t[DatabaseGroupId],");
             sb.AppendLine();
             sb.AppendLine("\t-- staging table fields");
             bool addComma = false;
 
-            foreach (DatabaseColumn column in table.Columns)
-            {
-                if (table.StagingAreaSchema.StartsWith("stgQu"))
-                {
-                    // clean up Quantum column names here
-                    NamingCleanup.CleanColumnNameQuantum(column);
-                }
+            //foreach (DatabaseColumn column in table.Columns)
+            //{
+            //    if (table.StagingAreaSchema.StartsWith("stgX"))
+            //    {
+            //        // clean up Quantum column names here
+            //        NamingCleanup.CleanColumnNames(column);
+            //    }
                 
-            }
+            //}
 
             foreach (DatabaseColumn column in table.Columns.Where(x => x.UseColumn).OrderBy(x => x.DatabaseColumnName))
             {

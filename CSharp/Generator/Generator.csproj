@@ -147,18 +147,6 @@
     <Content Include="Templates\Components\CheckInsertView.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\EssentialsAccountsDB\CreateqUDM_PolicyOutward.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Templates\EssentialsAccountsDB\CreateqUDM_PolicyInward.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Templates\EssentialsAccountsDB\CreatePolicyOutwardView.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Templates\EssentialsAccountsDB\CreatePolicyInwardView.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Templates\EssentialsAccountsDB\CreateLoadViewStub.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

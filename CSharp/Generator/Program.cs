@@ -151,8 +151,8 @@ namespace Generator
                         using (SqlConnection conn = new SqlConnection(Generator.Properties.Settings.Default.MetadataDatabase))
                         {
                             conn.Open();
-                            //EssentialsAccountsDB.CreateObjectsFromMetadata(conn);
-                            EssentialsAccountsSTG.CreateObjectsFromMetadata(conn, false);                           
+                            EssentialsAccountsDB.CreateObjectsFromMetadata(conn);
+                            //EssentialsAccountsSTG.CreateObjectsFromMetadata(conn, false);                           
                         }
                         Console.WriteLine("\nTables, Views and Stored Procs Created!");
                         break;

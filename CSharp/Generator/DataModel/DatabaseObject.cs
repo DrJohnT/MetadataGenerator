@@ -71,24 +71,6 @@ namespace Generator
         public bool UseObject { get; set; }
         public string LoadingPattern { get; set; }
 
-        //public string GetInsertColumnListSql()
-        //{
-        //    return GetInsertColumnListSql(null, null);
-        //}
-
-        //public string GetInsertColumnListSql(IEnumerable<DatabaseColumn> filteredColumns)
-        //{
-        //    return GetInsertColumnListSql(filteredColumns, null);
-        //}
-
-        //public string GetInsertColumnListSql(IEnumerable<DatabaseColumn> filteredColumns, string prefixOverride)
-        //{
-        //    if (filteredColumns == null)
-        //        filteredColumns = Columns.Where(column => !column.IsIdentity);
-
-        //    return GetColumnListSql(filteredColumns, prefixOverride);
-        //}
-
         public string GetColumnListSql()
         {
             return GetColumnListSql(null, null);
@@ -129,8 +111,11 @@ namespace Generator
                 }
             }
             string retValue = columnList.ToString();
-            // remove trailing comma
-            retValue = retValue.Substring(0, retValue.Length - 1);
+            if (retValue.Length > 0)
+                // remove trailing comma
+                retValue = retValue.Substring(0, retValue.Length - 1);
+            else
+                Console.WriteLine("fuck!");
             return retValue;
         }
 

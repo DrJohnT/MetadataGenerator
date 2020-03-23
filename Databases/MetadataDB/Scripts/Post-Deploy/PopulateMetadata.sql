@@ -104,7 +104,9 @@ using
             values
             -- DEV
                 (@DatabaseUseIdSource, 1, 1, 'MDFL', 'MDFL DEV', 'MR_MDFL_DEV1', 'DEFRNCMUIMTSQ12.eyua.net\INST2', null, 1),
-                (@DatabaseUseIdSource, 2, 1, 'MDFL', 'MDFL Source DEV', 'MR_SOURCE_DEV1', 'DEFRNCMUIMTSQ12.eyua.net\INST2', null, 1)
+                (@DatabaseUseIdSource, 2, 1, 'MDFL', 'MDFL Source DEV', 'MR_SOURCE_DEV1', 'DEFRNCMUIMTSQ12.eyua.net\INST2', null, 1),
+                (@DatabaseUseIdTarget, 3, 2, 'EssentialsAccounts', 'EssentialsAccountsSTG', 'EssentialsAccountsSTG', 'localhost', null, 1),
+                (@DatabaseUseIdTarget, 4, 2, 'EssentialsAccounts', 'EssentialsAccountsDB', 'EssentialsAccountsDB', 'localhost', null, 1)
             -- UAT
             --    (@DatabaseUseIdSource, 1, 1, 'MDFL', 'MDFL UAT', 'MR_MDFL_UAT1', 'DEFRNCMUIMTSQ14.eyua.net\INST2', null, 1),
             --    (@DatabaseUseIdSource, 2, 1, 'MDFL', 'MDFL Source UAT', 'MR_Source_UAT1', 'DEFRNCMUIMTSQ14.eyua.net\INST2', null, 1)

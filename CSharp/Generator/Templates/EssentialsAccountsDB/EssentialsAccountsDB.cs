@@ -14,17 +14,18 @@ namespace Generator
     class EssentialsAccountsDB
     {
         public const string DatabaseName = "EssentialsAccountsDB";
-        private const string LoadingSchema = "qLoad";
-        private const string LookupSchema = "qLookup";
-        private const string ExtractSchema = "qExtract";
-        private const string TableSchema = "qDm";
-        private const string DataMartSchema = "qDataMart";
-        private const string CubeSchema = "qCube";
+        private const string LoadingSchema = "eaLoad";
+        private const string LookupSchema = "eaLookup";
+        private const string ExtractSchema = "eaExtract";
+        private const string TableSchema = "eaDataMart";
+        private const string DataMartSchema = "eaDataMart";
+        private const string CubeSchema = "eaCubeView";
+        private const string StagingAreaSchema = "stgMdfl";
 
         public static void CreateObjectsFromMetadata(SqlConnection conn)
         {
-            try
-            {
+            //try
+            //{
                 Console.WriteLine();
                 Console.WriteLine("Creating objects for {0}", DatabaseName);
              
@@ -66,19 +67,16 @@ where A.DatabaseUse = 'TARGET' and B.DatabaseName = '{0}'
                 string checkInsertViewsSP = string.Empty;
                 string insertUnknowns = string.Empty;
 
-                IEnumerable<DatabaseColumn> policyInwardViewFilteredColumns = null;
-                IEnumerable<DatabaseColumn> policyOutwardViewFilteredColumns = null;
-
                 DataModel dm = PopulateFromMetadataDatabase.PopulateDataModelFromMetadataDatabase(database, conn);
                 foreach (DatabaseObject table in dm.Objects.Where(x => x.SchemaName.ToUpper() == TableSchema.ToUpper() && x.DatabaseObjectType.Trim().ToUpper() == "U"))
                 {
                     // create an artificial sort order where the dimXXXid columns are at the beginning
-                    foreach (DatabaseColumn column in table.Columns.Where(x => x.DatabaseColumnName.StartsWith("dim")))
+                    foreach (DatabaseColumn column in table.Columns.Where(x => x.DatabaseColumnName.ToLower().StartsWith("dim")))
                     {
                         column.DatabaseColumnSortOrder = "0" + column.DatabaseColumnName;
                     }
 
-                    string[] firstColumns = { "PropNonProp", "PolicyReference","Company", "PolicyDirection", "StatusDescription", "TreatyFac", "UnderwritingYear", "TreatyCode", "UnderwriterName" };
+                    string[] firstColumns = { "XXX" };
                     foreach (DatabaseColumn column in table.Columns.Where(x => firstColumns.Contains(x.DatabaseColumnName)))
                     {
                         column.DatabaseColumnSortOrder = "1" + column.DatabaseColumnName;
@@ -91,65 +89,19 @@ where A.DatabaseUse = 'TARGET' and B.DatabaseName = '{0}'
                       
                     }
                     {
-                        IEnumerable<DatabaseColumn> loadViewFilteredColumns = table.Columns.Where(column => (column.DatabaseColumnName.ToLower() != DatabaseObject.updatedloadlogid) &&
-                           column.DatabaseColumnName.ToLower().EndsWith("id") && !column.IsIdentity);
+                    IEnumerable<DatabaseColumn> loadViewFilteredColumns = table.Columns;
+                        //.Where(column => (column.DatabaseColumnName.ToLower() != DatabaseObject.updatedloadlogid) &&
+                          // column.DatabaseColumnName.ToLower().EndsWith("key") && !column.IsIdentity);
 
                         // Create stub of the load view
-                        CreateLoadViewStub(table, dirLoadViewStubs, LoadingSchema, table.GetColumnListSql(loadViewFilteredColumns));
+                        CreateLoadViewStub(table, dirLoadViewStubs, LoadingSchema, table.GetColumnListSql(loadViewFilteredColumns), StagingAreaSchema);
                     }
                     {
-                        // SELECT distinct DatabaseColumnName FROM Metadata.ColumnInfo where DatabaseInfoId = 15 and ObjectType = 'Table' and LEFT(DatabaseColumnName,3) = 'dim'
-                        // following keys are allowed in the views:
-                        //dimAccountId
-                        //dimBrokerId
-                        //dimCedantId
-                        //dimClaimId
-                        //dimDateId
-                        string[] excludeColumns = { "policynumber", "policysequencenumber", "companycode", "departmentcode", "policyoutwardparentid", "dimoutwardbrokerid", "dimoutwardreinsurerid", "dimoutwardtermid", "dimpolicyinwardprorataid", "dimpolicyinwardregulatoryid", "dimpolicyinwardxlid", "dimpolicylimitid", "dimpolicyreinsuranceid", "dimpolicyinwardtermid", "dimpolicyinwardid", "dimpolicyoutwardid", "accountcode" };
+                        string[] excludeColumns = { "XXX" };
 
                         IEnumerable<DatabaseColumn> dataMartViewFilteredColumns = table.Columns.Where(column => (!DatabaseObject.allStandardColumns.Contains(column.DatabaseColumnName.ToLower()) &&                           
                             !excludeColumns.Contains(column.DatabaseColumnName.ToLower()) &&
-                            !column.DatabaseColumnName.ToLower().StartsWith("spk") &&
-                            !column.DatabaseColumnName.ToLower().StartsWith("sfk") &&
-                            !(column.DatabaseColumnName.ToLower().StartsWith("fact") && column.DatabaseColumnName.ToLower().EndsWith("id"))));
-
-                        // for Datamart views (used below)
-                        string[] policyInwardDims = { "dimpolicy", "dimpolicyinward", "dimpolicyinwardxl"};
-                        if (policyInwardDims.Contains(table.DatabaseObjectName.ToLower()))
-                        {
-                            Console.WriteLine();
-                            Console.WriteLine("Addding {0} to {1}", table.DatabaseObjectName, "qUDM_PolicyInward");
-                            if (policyInwardViewFilteredColumns == null)
-                                policyInwardViewFilteredColumns = dataMartViewFilteredColumns;
-                            else
-                            {
-                                ColumnComparer columnComparer = new ColumnComparer();
-                                foreach (DatabaseColumn column in dataMartViewFilteredColumns.Where(x => !policyInwardViewFilteredColumns.Contains<DatabaseColumn>(x, columnComparer)))
-                                {
-                                    // add column to common view
-                                    policyInwardViewFilteredColumns = policyInwardViewFilteredColumns.Concat(new[] { column });
-                                }
-                            }
-                        }
-
-                        // for Datamart views (used below)
-                        string[] policyOutwardDims = { "dimpolicy", "dimpolicyoutward" };
-                        if (policyOutwardDims.Contains(table.DatabaseObjectName.ToLower()))
-                        {
-                            Console.WriteLine();
-                            Console.WriteLine("Addding {0} to {1}", table.DatabaseObjectName, "qUDM_PolicyOutward");
-                            if (policyOutwardViewFilteredColumns == null)
-                                policyOutwardViewFilteredColumns = dataMartViewFilteredColumns;
-                            else
-                            {
-                                ColumnComparer columnComparer = new ColumnComparer();
-                                foreach (DatabaseColumn column in dataMartViewFilteredColumns.Where(x => !policyOutwardViewFilteredColumns.Contains<DatabaseColumn>(x, columnComparer)))
-                                {
-                                    // add column to common view
-                                    policyOutwardViewFilteredColumns = policyOutwardViewFilteredColumns.Concat(new[] { column });
-                                }
-                            }
-                        }
+                            !(column.DatabaseColumnName.ToLower().StartsWith("fact") && column.DatabaseColumnName.ToLower().EndsWith("key"))));
 
                         // DataMart views
                         CreateDataMartView(table, dirDataMartViews, DataMartSchema, table.GetViewColumnListSql(dataMartViewFilteredColumns));
@@ -171,49 +123,6 @@ where A.DatabaseUse = 'TARGET' and B.DatabaseName = '{0}'
                     }
                 }
 
-                // Special case - join three dimensions together for qDataMart.dimPolicyInward and qUDM_PolicyInward
-                {
-                    DatabaseObject table = dm.Objects.First<DatabaseObject>(x => x.DatabaseObjectName == "dimPolicyInward" && x.SchemaName.ToUpper() == TableSchema.ToUpper() && x.DatabaseObjectType.Trim().ToUpper() == "U");
-                    foreach (DatabaseColumn column in policyInwardViewFilteredColumns.Where(x => x.DatabaseObjectName == "dimPolicyInwardXl"))
-                    {
-                        // change column prefix
-                        column.DatabaseColumnPrefix = "PXL";
-                    }
-                    foreach (DatabaseColumn column in policyInwardViewFilteredColumns.Where(x => x.DatabaseObjectName == "dimPolicy"))
-                    {
-                        // change column prefix
-                        column.DatabaseColumnPrefix = "POL";
-                    }
-                    // DataMart views
-                    CreateDataMartView(table, dirDataMartViews, DataMartSchema, table.GetViewColumnListSql(policyInwardViewFilteredColumns), "CreatePolicyInwardView.sql");
-
-                    // cube views
-                    CreateDataMartView(table, dirCubeViews, CubeSchema, table.GetColumnListSql(policyInwardViewFilteredColumns), "CreatePolicyInwardView.sql");
-
-                    // Extract view
-                    CreateDataMartView(table, dirExtractViews, ExtractSchema, table.GetViewColumnListSql(policyInwardViewFilteredColumns), "CreateqUDM_PolicyInward.sql", "qUDM_PolicyInward");
-                }
-
-                // Special case - join two dimensions together for qDataMart.dimPolicyOutward and qUDM_PolicyOutward
-                {
-                    DatabaseObject table = dm.Objects.First<DatabaseObject>(x => x.DatabaseObjectName == "dimPolicyOutward" && x.SchemaName.ToUpper() == TableSchema.ToUpper() && x.DatabaseObjectType.Trim().ToUpper() == "U");
-
-                    foreach (DatabaseColumn column in policyOutwardViewFilteredColumns.Where(x => x.DatabaseObjectName == "dimPolicy"))
-                    {
-                        // change column prefix
-                        column.DatabaseColumnPrefix = "POL";
-                    }
-                    // DataMart views
-                    CreateDataMartView(table, dirDataMartViews, DataMartSchema, table.GetViewColumnListSql(policyOutwardViewFilteredColumns), "CreatePolicyOutwardView.sql");
-
-                    // cube views
-                    CreateDataMartView(table, dirCubeViews, CubeSchema, table.GetColumnListSql(policyOutwardViewFilteredColumns), "CreatePolicyOutwardView.sql");
-
-                    // Extract view
-                    CreateDataMartView(table, dirExtractViews, ExtractSchema, table.GetViewColumnListSql(policyOutwardViewFilteredColumns), "CreateqUDM_PolicyOutward.sql", "qUDM_PolicyOutward");
-                }
-
-
                 CheckInsertViews(dirLoadProcs, checkInsertViewsSP);
 
                 InsertUnknownsScript(dirPostDeployFolder, insertUnknowns);
@@ -224,14 +133,14 @@ where A.DatabaseUse = 'TARGET' and B.DatabaseName = '{0}'
                 }
 
                 Console.WriteLine("Done all " + DatabaseName);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error in EssentialsAccountsDB.CreateObjectsFromMetadata {0}", ex.Message);
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine("Error in EssentialsAccountsDB.CreateObjectsFromMetadata {0}", ex.Message);
+            //}
         }
 
-        private static void CreateLoadViewStub(DatabaseObject table, DirectoryInfo dirLoadViewSubs, string viewSchema, string columnList)
+        private static void CreateLoadViewStub(DatabaseObject table, DirectoryInfo dirLoadViewSubs, string viewSchema, string columnList, string StagingAreaSchema)
         {
             string sqlScript = Templates.GetTemplateContent(DatabaseName, "CreateLoadViewStub.sql");
 
@@ -239,7 +148,8 @@ where A.DatabaseUse = 'TARGET' and B.DatabaseName = '{0}'
                 viewSchema,                         // {0} = view schema name
                 table.DatabaseObjectName,           // {1} = table name
                 columnList ,                        // {2} = column list
-                "dt_" + table.DatabaseObjectName    // {3} = data translation list
+                "dt_" + table.DatabaseObjectName,    // {3} = data translation list
+                StagingAreaSchema                    // {4} = staging area schema
                 );
 
             string sqlPath = Path.Combine(dirLoadViewSubs.FullName, string.Format("{0}Insert.sql", table.DatabaseObjectName));
@@ -297,8 +207,8 @@ where A.DatabaseUse = 'TARGET' and B.DatabaseName = '{0}'
 
                 sql = string.Format(sqlScript, 
                     table.SchemaName, 
-                    table.DatabaseObjectName, 
-                    table.DatabaseObjectName + "Id", 
+                    table.DatabaseObjectName,
+                    table.DatabaseObjectName + "Key", 
                     table.GetColumnListSql(filteredColumns, string.Empty), 
                     table.GetUnknownList(filteredColumns, "N'UNKNOWN'", "N'U'", -1), 
                     -1, 
