@@ -46,7 +46,7 @@ where A.DatabaseUse = 'TARGET' and B.DatabaseName = '{0}'
 
                 DatabaseInfo database = databases.First();  // we only have one database to generate for
 
-                string[] staticDims = { "dimCalendar" };
+                string[] staticDims = { "" };
 
                 DirectoryInfo dirPostDeployFolder = Utilities.GetAndCleanOutputDir(DatabaseName, @"Scripts\Post-Deploy");
 
@@ -110,11 +110,11 @@ where A.DatabaseUse = 'TARGET' and B.DatabaseName = '{0}'
                         CreateDataMartView(table, dirCubeViews, CubeSchema, table.GetColumnListSql(dataMartViewFilteredColumns));
                     }
 
-                    string[] excludeDimensions = { "dimcalendar" };
+                    string[] excludeDimensions = { "" };
                     if (!excludeDimensions.Contains(table.DatabaseObjectName.ToLower()))
                     {
                         
-                        IEnumerable<DatabaseColumn> checkInsertViewFilteredColumns = table.Columns.Where(column => (column.DatabaseColumnName.ToLower() != DatabaseObject.updatedloadlogid && !column.IsIdentity));
+                        IEnumerable<DatabaseColumn> checkInsertViewFilteredColumns = table.Columns.Where(column => (column.DatabaseColumnName.ToLower() != DatabaseObject.updatedloadlogid && column.DatabaseColumnName.ToLower() != DatabaseObject.loadlogid && !column.IsIdentity));
                         checkInsertViewsSP += TemplateComponents.CheckInsertView(LoadingSchema, table.DatabaseObjectName, table.GetColumnListSql(checkInsertViewFilteredColumns));
 
                         // include dimensions

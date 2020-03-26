@@ -14,10 +14,9 @@ namespace Generator
         public const string updatedloadlogid = "updatedloadlogid";
         public const string loadlogid = "loadlogid";
         public const string databaseinfoid = "databaseinfoid";
-        public const string databasegroupid = "databasegroupid";
         public static string[] standardColumns = { loadlogid, updatedloadlogid };
-        public static string[] allStandardColumns = { loadlogid, updatedloadlogid, databaseinfoid, databasegroupid };
-        public static string[] nonUpdateableStandardColumns = { loadlogid, databaseinfoid, databasegroupid };
+        public static string[] allStandardColumns = { loadlogid, updatedloadlogid };
+        public static string[] nonUpdateableStandardColumns = { loadlogid };
 
 
         public DatabaseObject()
@@ -86,7 +85,7 @@ namespace Generator
             StringBuilder columnList = new StringBuilder();
 
             if (filteredColumns == null)
-                filteredColumns = Columns.Where(x => x.DatabaseColumnName.ToLower() != updatedloadlogid);
+                filteredColumns = Columns.Where(x => x.DatabaseColumnName.ToLower() != loadlogid);
 
             // [prefix].[column]
             string format = "\r\n\t\t\t{2}.{1}{0}";
@@ -114,8 +113,6 @@ namespace Generator
             if (retValue.Length > 0)
                 // remove trailing comma
                 retValue = retValue.Substring(0, retValue.Length - 1);
-            else
-                Console.WriteLine("fuck!");
             return retValue;
         }
 
@@ -254,7 +251,7 @@ namespace Generator
             {
                 updateColumnSql += "\n\t\t\t";
 
-                if (column.DatabaseColumnName.ToLower() == updatedloadlogid)
+                if (column.DatabaseColumnName.ToLower() == loadlogid)
                 {
                     updateColumnSql += targetSchema + "." + column.DatabaseColumnName + " = @LoadLogId,";
                 }
