@@ -1,0 +1,37 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="GenerateCube.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="AsServerName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">localhost</Value>
+    </Setting>
+    <Setting Name="OutputDir" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">C:\dev\Output</Value>
+    </Setting>
+    <Setting Name="OleDbConnectionString" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Provider=SQLNCLI11.1;Data Source=localhost;Integrated Security=SSPI;Initial Catalog=EssentialsAccountsDB&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.OleDb&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Provider=SQLNCLI11.1;Data Source=localhost;Integrated Security=SSPI;Initial Catalog=EssentialsAccountsDB</Value>
+    </Setting>
+    <Setting Name="SqlClientConnectionString" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=localhost;Initial Catalog=EssentialsAccountsDB;Integrated Security=True;&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=localhost;Initial Catalog=EssentialsAccountsDB;Integrated Security=True;</Value>
+    </Setting>
+    <Setting Name="SqlDataMartDbName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">EssentialsAccountsDB</Value>
+    </Setting>
+    <Setting Name="ProjectTemplate" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Files\EssentialsAccountCube.dwproj</Value>
+    </Setting>
+    <Setting Name="AsDatabaseId" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">EssentialsAccountsCube</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
