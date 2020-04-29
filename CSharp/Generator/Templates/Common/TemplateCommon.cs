@@ -36,7 +36,7 @@ namespace Generator
             else
                 whenMatchedColumns = table.Columns.Where(column => column.IsPrimaryKey == false && column.IsIdentity == false && !DatabaseObject.allStandardColumns.Contains(column.DatabaseColumnName.ToLower()));
 
-            IEnumerable<DatabaseColumn> insertColumns = table.Columns.Where(column => column.DatabaseColumnName.ToLower() != DatabaseObject.updatedloadlogid && column.IsIdentity == false );
+            IEnumerable<DatabaseColumn> insertColumns = table.Columns.Where(column => column.DatabaseColumnName.ToLower() != DatabaseObject.updatedloadlogid && column.DatabaseColumnName.ToLower() != DatabaseObject.loadlogid && column.IsIdentity == false );
 
             IEnumerable<DatabaseColumn> identityColumns = table.Columns.Where(column => column.IsIdentity);
             string andClauseForDelete = string.Empty;

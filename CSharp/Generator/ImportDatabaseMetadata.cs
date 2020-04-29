@@ -113,7 +113,8 @@ namespace Generator
                                     ) AS C ON t.object_id = C.object_id
 	                        JOIN rowCounts A
 		                        on t.object_id = A.object_id                        
-                        WHERE (lower(rtrim(t.[name])) NOT LIKE '''%''') -- remove tables which have a single quote at the begining and end
+                        WHERE (lower(rtrim(t.[name])) NOT LIKE '''%') -- remove tables which have a single quote at the begining 
+                            and (lower(rtrim(t.[name])) NOT LIKE '%''') -- remove tables which have a single quote at the end
                         ORDER BY
 	                        s.[name],
                             t.[name];
@@ -123,15 +124,15 @@ namespace Generator
                     }
 
                     // add views
-                    if (dataModel.Database.DatabaseDescription == "EssentialsAccountsDB")
+                    if (dataModel.Database.DatabaseDescription == "RA_COE")
                     {
                         string sql = string.Format(@"
                             SELECT 
                                 {0} AS DatabaseInfoId,
                                 '{1}' AS DatabaseName,
                                 t.object_id AS DatabaseObjectId,
-                                s.name AS SchemaName,
-                                t.name AS DatabaseObjectName,
+                                s.[name] AS SchemaName,
+                                t.[name] AS DatabaseObjectName,
                                 'V' AS DatabaseObjectType,
                                 C.ColumnCount
                             FROM sys.views t
@@ -142,8 +143,8 @@ namespace Generator
                                         GROUP BY object_id
                                      ) AS C ON t.object_id = C.object_id
                             ORDER BY
-	                            s.name,
-                                t.Name
+	                            s.[name],
+                                t.[name]
                         ", dataModel.Database.DatabaseInfoId, dataModel.Database.DatabaseName);
                         
                         if (dataModel.Objects.Count == 0)
@@ -166,8 +167,8 @@ namespace Generator
                                             {0} AS DatabaseInfoId,
                                             '{1}' AS DatabaseName,
 			                                t.object_id as DatabaseObjectId,
-			                                s.name		as SchemaName,
-			                                t.name		as DatabaseObjectName,
+			                                s.[name]		as SchemaName,
+			                                t.[name]		as DatabaseObjectName,
 			                                'V'			as DatabaseObjectType,
 			                                C.ColumnCount
                                 from		sys.views	t
@@ -181,10 +182,10 @@ namespace Generator
 				                                group by	object_id
 			                                )			as C
 	                                  on t.object_id = C.object_id
-                                where		s.name = N'mdm' and t.name not like 'viw_SYSTEM%'
+                                where		s.[name] = N'mdm' and t.[name] not like 'viw_SYSTEM%'
                                 order by
-			                                s.name,
-			                                t.name;
+			                                s.[name],
+			                                t.[name];
                         ", dataModel.Database.DatabaseInfoId, dataModel.Database.DatabaseName);
                         if (dataModel.Objects.Count == 0)
                         {
@@ -201,16 +202,16 @@ namespace Generator
                     }
 
                     int tableCount = 1;
-                    foreach (DatabaseObject table in dataModel.Objects)
+                    foreach (DatabaseObject table in dataModel.Objects) //.Where(x => x.SchemaName != "BIML"))
                     {
                         Console.WriteLine("\nProcessing object {0} of {1} '{2}.{3}'", tableCount, dataModel.Objects.Count, table.SchemaName, table.DatabaseObjectName);
 
                         // add StagingAreaSchema
-                        try
-                        {
-                            table.StagingAreaSchema = database.Schemas.Find(c => c.SchemaName == table.SchemaName).StagingAreaSchema;
-                        }
-                        catch { }
+                        //try
+                        //{
+                        //    table.StagingAreaSchema = database.Schemas.Find(c => c.SchemaName == table.SchemaName).StagingAreaSchema;
+                        //}
+                        //catch { }
 
                         
 
@@ -235,8 +236,8 @@ namespace Generator
                             '{2}' AS DatabaseObjectName,
 	                        c.column_id AS DatabaseColumnId,
 	                        c.[name] AS DatabaseColumnName,
-	                        columnproperty(c.object_id, c.name, 'charmaxlen') AS [Length],
-                            t.name AS DataType,	
+	                        columnproperty(c.object_id, c.[name], 'charmaxlen') AS [Length],
+                            t.[name] AS DataType,	
                             c.is_identity AS IsIdentity,
 	                        c.is_nullable AS IsNullable,
                             c.precision AS [Precision],
@@ -264,8 +265,8 @@ namespace Generator
                         {0} AS DatabaseInfoId,
                         '{1}' AS DatabaseName,
                         t.object_id AS DatabaseObjectId,
-                        s.name AS SchemaName,
-                        t.name AS DatabaseObjectName,
+                        s.[name] AS SchemaName,
+                        t.[name] AS DatabaseObjectName,
                         'P' AS DatabaseObjectType,
                         -1 as ColumnCount,
                         -1 as NumberOfRows
@@ -273,8 +274,8 @@ namespace Generator
                         JOIN sys.schemas s ON s.schema_id = t.schema_id
                     WHERE (lower(rtrim(t.[name])) NOT LIKE 'tmp%' and lower(rtrim(t.[name])) NOT LIKE 'temp%')
                     ORDER BY
-	                    s.name,
-                        t.Name
+	                    s.[name],
+                        t.[name]
                     ", dataModel.Database.DatabaseInfoId, dataModel.Database.DatabaseName);
 
                     
@@ -293,10 +294,10 @@ namespace Generator
 	                        c.[name] AS DatabaseColumnName,
 	                        case 
 								when c.max_length = -1 then -1
-								when left(t.name,1) = N'n' then c.max_length / 2 
+								when left(t.[name],1) = N'n' then c.max_length / 2 
 								else c.max_length 
 							end AS [Length],
-                            t.name AS DataType,	
+                            t.[name] AS DataType,	
                             c.precision AS [Precision],
                             c.scale AS Scale
                         FROM sys.parameters c 

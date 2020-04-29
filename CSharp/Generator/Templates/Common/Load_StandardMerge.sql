@@ -34,9 +34,11 @@ begin
 		then update set 
 				{5}
 		when not matched by target then 
-		insert ({6}
+		insert ({6},
+			LoadLogId
 		) 
-		values ({7}
+		values ({7},
+			@LoadLogId
 		)
 		--when not matched by source {9}then 
 		--     delete
@@ -81,3 +83,4 @@ begin
 		@CountOfUpdatedRows = @CountOfUpdatedRows,
 		@CountOfDeletedRows = @CountOfDeletedRows;
 end	
+

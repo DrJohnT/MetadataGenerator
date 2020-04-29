@@ -66,14 +66,14 @@ namespace Generator
 
                         DirectoryInfo dirViews = Utilities.GetAndCleanOutputDir(DatabaseName, schema.StagingAreaSchema, "Views");
 
-                        foreach (DatabaseObject table in dm.Objects.Where(x => x.DatabaseObjectType.Trim().ToUpper() == "U" && 
+                        foreach (DatabaseObject table in dm.Objects.Where(x => (x.DatabaseObjectType.Trim().ToUpper() == "U" || x.DatabaseObjectType.Trim().ToUpper() == "V") && 
                                     x.UseObject && 
                                     x.SchemaName == schema.SchemaName))
                         {
                             table.StagingAreaSchema = schema.StagingAreaSchema; // ensure this is populated
                             CreateStgTableScript(database, table, dirTables);
 
-                            CreateDataTranslationViews(database, table, dirViews);
+                            //CreateDataTranslationViews(database, table, dirViews);
 
                             CreateDmTableScript(database, table, dirDmTables, dataMartSchemaName);
                         }

@@ -68,6 +68,34 @@ begin
 				D.DatabaseUse = 'SOURCE'
 				and DatabaseObjectName in ('DimPurchasedSold','FactPurchasedSoldBase','FactPurchasedSoldCurrent')
 
+	-- remove columns with specific suffix
+	update
+				A
+	set
+				A.UseColumn = 0
+	from		Metadata.DatabaseColumn A
+		join	Metadata.DatabaseObject B
+		  on	A.DatabaseInfoId = B.DatabaseInfoId
+				and A.DatabaseObjectId = B.DatabaseObjectId
+		join	Metadata.DatabaseInfo	C
+		  on	A.DatabaseInfoId = C.DatabaseInfoId
+		join	Metadata.DatabaseUse	D
+		  on	C.DatabaseUseId = D.DatabaseUseId
+	where
+				D.DatabaseUse = 'SOURCE'
+				and B.SchemaName in ('mdfl','myp')
+				and (
+						(A.DatabaseColumnName like '%PYMTD') 
+					or  (A.DatabaseColumnName like '%PY')
+					or  (A.DatabaseColumnName like '%PY')
+					or  (A.DatabaseColumnName like '%PCY')
+					or  (A.DatabaseColumnName like '%ETD')
+					or  (A.DatabaseColumnName like '%PYE')
+					or  (A.DatabaseColumnName like '%PFY')
+					or  (A.DatabaseColumnName like '%CYTD')
+					or  (A.DatabaseColumnName like '%FYTD')
+				)
+
 	-- remove columns where the column is always set to null
 	update
 				A

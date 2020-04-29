@@ -20,7 +20,7 @@ namespace Generator
         private const string TableSchema = "eaDataMart";
         private const string DataMartSchema = "eaDataMart";
         private const string CubeSchema = "eaCubeView";
-        private const string StagingAreaSchema = "stgMdfl";
+        private const string StagingAreaSchema = "stgMdfl";        
 
         public static void CreateObjectsFromMetadata(SqlConnection conn)
         {
@@ -89,7 +89,7 @@ where A.DatabaseUse = 'TARGET' and B.DatabaseName = '{0}'
                       
                     }
                     {
-                    IEnumerable<DatabaseColumn> loadViewFilteredColumns = table.Columns;
+                        IEnumerable<DatabaseColumn> loadViewFilteredColumns = table.Columns;
                         //.Where(column => (column.DatabaseColumnName.ToLower() != DatabaseObject.updatedloadlogid) &&
                           // column.DatabaseColumnName.ToLower().EndsWith("key") && !column.IsIdentity);
 
@@ -114,7 +114,8 @@ where A.DatabaseUse = 'TARGET' and B.DatabaseName = '{0}'
                     if (!excludeDimensions.Contains(table.DatabaseObjectName.ToLower()))
                     {
                         
-                        IEnumerable<DatabaseColumn> checkInsertViewFilteredColumns = table.Columns.Where(column => (column.DatabaseColumnName.ToLower() != DatabaseObject.updatedloadlogid && column.DatabaseColumnName.ToLower() != DatabaseObject.loadlogid && !column.IsIdentity));
+                        IEnumerable<DatabaseColumn> checkInsertViewFilteredColumns = table.Columns.Where(column => (!DatabaseObject.allStandardColumns.Contains(column.DatabaseColumnName.ToLower()) && 
+                            !column.IsIdentity));
                         checkInsertViewsSP += TemplateComponents.CheckInsertView(LoadingSchema, table.DatabaseObjectName, table.GetColumnListSql(checkInsertViewFilteredColumns));
 
                         // include dimensions

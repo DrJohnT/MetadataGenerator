@@ -3,6 +3,7 @@ AS
 SELECT 
 	T.DatabaseInfoId,
 	S.DatabaseGroupId,
+	S.DatabaseGroup,
 	S.DatabaseDescription,
 	S.DatabaseName,
 	U.DatabaseUse,

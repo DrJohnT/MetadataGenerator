@@ -115,7 +115,7 @@ namespace Generator
                             conn.Open();
                             EssentialsAccountsDB.CreateObjectsFromMetadata(conn);
                             Console.WriteLine("\nIgnoring Staging tables!");
-                            //EssentialsAccountsSTG.CreateObjectsFromMetadata(conn, true);
+                         //   EssentialsAccountsSTG.CreateObjectsFromMetadata(conn, true);
                         }
                         Console.WriteLine("\nTables, Views and Stored Procs Recreated!");
                         break;
@@ -154,7 +154,7 @@ namespace Generator
                             conn.Open();
                             EssentialsAccountsDB.CreateObjectsFromMetadata(conn);
                             Console.WriteLine("\nIgnoring Staging tables!");
-                            //EssentialsAccountsSTG.CreateObjectsFromMetadata(conn, false);                           
+                            EssentialsAccountsSTG.CreateObjectsFromMetadata(conn, false);                           
                         }
                         Console.WriteLine("\nTables, Views and Stored Procs Created!");
                         break;

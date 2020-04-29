@@ -27,13 +27,21 @@ namespace GenerateCube
                             {
                                 // hide key columns
                                 col.IsHidden = true;
-                            } 
-                            else if (col.Name.StartsWith("m_"))
+                            }
+                            else if (col.Name.ToLower() == "sortorder" || col.Name.ToLower() == "sort order")
+                            {
+                                col.IsHidden = true;
+                                //col.SortByColumn = col;
+                            }
+                            else if (col.Name.StartsWith("m_") || col.Name.StartsWith("a_"))
                             {
                                 // hide the original column
                                 col.IsHidden = true;
 
                                 string measureName = SplitCamelCase(col.Name.Substring(2));
+                                string func = "sum"; // default
+                                if (col.Name.StartsWith("a_"))
+                                    func = "avg";
 
                                 // check if the measure already exists 
                                 Measure measure = table.Measures.Find(measureName);
@@ -43,7 +51,7 @@ namespace GenerateCube
                                     Console.WriteLine("Creating measure {0}", measureName);
                                     measure = new Measure();
                                     measure.Name = measureName;
-                                    measure.Expression = string.Format(" sum({0}[{1}])", table.Name, col.Name);
+                                    measure.Expression = string.Format(" {0}({1}[{2}])", func, table.Name, col.Name);
                                     measure.FormatString = GetMeasureFormatString(col.Name);
                                     
                                     // add the new measure to the cube
@@ -58,7 +66,7 @@ namespace GenerateCube
                             else if (col.Type.ToString() == "Data")
                             {
                                 // camel case other Data columns
-                                 col.Name = SplitCamelCase(col.Name);
+                                col.Name = SplitCamelCase(col.Name);
                             }
                         }
                     }
@@ -99,16 +107,21 @@ namespace GenerateCube
 
         public static string SplitCamelCase(string str)
         {
-            string returnValue = Regex.Replace(
-                Regex.Replace(
-                    str,
-                    @"(\P{Ll})(\P{Ll}\p{Ll})",
+            if (!str.Contains(" "))
+            {
+                string returnValue = Regex.Replace(
+                    Regex.Replace(
+                        str,
+                        @"(\P{Ll})(\P{Ll}\p{Ll})",
+                        "$1 $2"
+                    ),
+                    @"(\p{Ll})(\P{Ll})",
                     "$1 $2"
-                ),
-                @"(\p{Ll})(\P{Ll})",
-                "$1 $2"
-            );
-            return returnValue.Replace("_", "").Replace("  ", " ");
+                );
+                return returnValue.Replace("_", "").Replace("  ", " ");
+            }
+            else
+                return str;
         }
         #endregion
     }

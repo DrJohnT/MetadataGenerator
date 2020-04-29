@@ -103,11 +103,18 @@ using
             -- Note that the DatabaseInfoId's must remain fixed.  DO NOT change them.  
             values
             -- DEV
-                (@DatabaseUseIdSource, 1, 1, 'MDFL', 'MDFL DEV', 'MR_MDFL_DEV1', 'DEFRNCMUIMTSQ12.eyua.net\INST2', null, 1),
-                (@DatabaseUseIdSource, 2, 1, 'MDFL', 'MDFL Source DEV', 'MR_SOURCE_DEV1', 'DEFRNCMUIMTSQ12.eyua.net\INST2', null, 1),
+                (@DatabaseUseIdSource, 1, 1, 'MDFL', 'MDFL UAT', 'MR_MDFL_UAT1', 'DEFRNCMUIMTSQ14.eyua.net\INST2', null, 1),
+                (@DatabaseUseIdSource, 2, 1, 'MDFL', 'MDFL Source UAT', 'MR_SOURCE_UAT1', 'DEFRNCMUIMTSQ14.eyua.net\INST2', null, 1),
                 (@DatabaseUseIdTarget, 3, 2, 'EssentialsAccounts', 'EssentialsAccountsSTG', 'EssentialsAccountsSTG', 'localhost', null, 1),
-                (@DatabaseUseIdTarget, 4, 2, 'EssentialsAccounts', 'EssentialsAccountsDB', 'EssentialsAccountsDB', 'localhost', null, 1)
-            -- UAT
+                (@DatabaseUseIdTarget, 4, 2, 'EssentialsAccounts', 'EssentialsAccountsDB', 'EssentialsAccountsDB', 'localhost', null, 1),
+                (@DatabaseUseIdSource, 5, 3, 'MR Portal', 'Markets STG', 'MR_APP_STG', 'DEFRNCMPIMTSQ02.ey.net\INST2', null, 1),
+                (@DatabaseUseIdSource, 6, 3, 'MR Portal', 'Markets UAM', 'MR_MPPortal_PRD', 'DEFRNCMPIMTSQ02.ey.net\INST2', null, 1),
+                (@DatabaseUseIdSource, 7, 3, 'MR Portal', 'Markets MM',  'MR_MMPortal_PRD', 'DEFRNCMPIMTSQ02.ey.net\INST2', null, 1),
+                (@DatabaseUseIdSource, 8, 3, 'MR Portal', 'Markets APP', 'MR_APP_LIVE', 'DEFRNCMPIMTSQ02.ey.net\INST2', null, 1),
+                (@DatabaseUseIdSource, 9, 4, 'COE',       'RA_COE',      'RA_COE_PRD',  N'DEFRNCMPIMTSQ12\INST2', null, 1)
+            
+            -- MDFL UAT
+
             --    (@DatabaseUseIdSource, 1, 1, 'MDFL', 'MDFL UAT', 'MR_MDFL_UAT1', 'DEFRNCMUIMTSQ14.eyua.net\INST2', null, 1),
             --    (@DatabaseUseIdSource, 2, 1, 'MDFL', 'MDFL Source UAT', 'MR_Source_UAT1', 'DEFRNCMUIMTSQ14.eyua.net\INST2', null, 1)
         ) as V (DatabaseUseId, DatabaseInfoId, DatabaseGroupId, DatabaseGroup, DatabaseDescription, DatabaseName, ServerName, pkPrefix, ImportMetadata)
@@ -168,7 +175,10 @@ using
             values (1, 1, 'mdfl', 'stgMdfl'),
                 (2, 1, 'ods', 'stgOds'),
                 (3, 1, 'stg', 'stgStg'),
-                (4, 2, 'wec', 'stgWec')
+                (4, 2, 'wec', 'stgWec'),
+                (5, 5, 'myp', 'stgMyp'),
+                (6, 9, 'COE', 'stgCoe'),
+                (7, 9, 'Finance', 'stgFinance')
         ) as V (SchemaInfoId, DatabaseInfoId, SchemaName, StagingAreaSchema)
 ) as S
 on S.SchemaInfoId = T.SchemaInfoId
