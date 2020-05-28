@@ -23,11 +23,14 @@ begin
 		@ActionType=N'START';
 	
 	begin try
+		truncate table [{2}].[{1}];
 
 		insert into [{2}].[{1}]
-		output  $action into @SqlAction
 		({3}
 		)
+		output
+            N'INSERT' as SqlAction
+        into @SqlAction
 		select {3}
 		from [{0}].[{1}Insert] i;
 

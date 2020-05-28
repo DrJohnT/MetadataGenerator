@@ -14,7 +14,7 @@ namespace Generator
         public const string updatedloadlogid = "updatedloadlogid";
         public const string loadlogid = "loadlogid";
         public const string databaseinfoid = "databaseinfoid";
-        public static string[] standardColumns = { loadlogid, updatedloadlogid };
+        public static string[] standardColumns = { updatedloadlogid };
         public static string[] allStandardColumns = { loadlogid, updatedloadlogid };
         public static string[] nonUpdateableStandardColumns = { loadlogid };
 

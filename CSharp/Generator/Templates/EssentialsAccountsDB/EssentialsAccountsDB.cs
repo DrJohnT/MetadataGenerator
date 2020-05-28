@@ -82,14 +82,22 @@ where A.DatabaseUse = 'TARGET' and B.DatabaseName = '{0}'
                         column.DatabaseColumnSortOrder = "1" + column.DatabaseColumnName;
                     }
 
-                    if (!staticDims.Contains(table.DatabaseObjectName))
+                    if (!staticDims.Contains(table.DatabaseObjectName) && (table.DatabaseObjectName.StartsWith("Dim") || table.DatabaseObjectName.StartsWith("Sec")))
                     {
                        
                        TemplateCommon.StandardMergeSP(table, dirLoadProcs, LoadingSchema, null);
                       
                     }
+
+                    if (table.DatabaseObjectName.StartsWith("Fact"))
                     {
-                        IEnumerable<DatabaseColumn> loadViewFilteredColumns = table.Columns;
+
+                        TemplateCommon.StandardInsertSP(table, dirLoadProcs, LoadingSchema, null);
+
+                    }
+
+                    {
+                    IEnumerable<DatabaseColumn> loadViewFilteredColumns = table.Columns;
                         //.Where(column => (column.DatabaseColumnName.ToLower() != DatabaseObject.updatedloadlogid) &&
                           // column.DatabaseColumnName.ToLower().EndsWith("key") && !column.IsIdentity);
 

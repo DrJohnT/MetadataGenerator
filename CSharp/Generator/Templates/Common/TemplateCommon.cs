@@ -94,7 +94,7 @@ namespace Generator
                 LoadingSchema,                      // {0} = loading schema name
                 table.DatabaseObjectName,           // {1} = table name
                 table.SchemaName,                   // {2} = table schema
-                table.GetColumnListSql(table.Columns.Where(column => !DatabaseObject.standardColumns.Contains(column.DatabaseColumnName.ToLower())), null),          // {3} = column list
+                table.GetColumnListSql(table.Columns.Where(column => !DatabaseObject.standardColumns.Contains(column.DatabaseColumnName.ToLower())), string.Empty),          // {3} = column list
                 prefix // {4} = prefix for the stored proc name
                 );
 
