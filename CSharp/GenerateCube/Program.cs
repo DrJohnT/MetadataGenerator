@@ -72,7 +72,7 @@ namespace GenerateCube
                     }
                     
                     // save the new measures and renamed columns to the server
-                    db.Update(Microsoft.AnalysisServices.UpdateOptions.ExpandFull);
+                   // db.Update(Microsoft.AnalysisServices.UpdateOptions.ExpandFull);
 
                     // export the cube definition to the file system so we can diff using Beyond Compare
                     ExportCubeDefinitionToDisk.ExportCubeDefinition(db);
