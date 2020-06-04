@@ -94,6 +94,14 @@ namespace MarkdownWikiGenerator
             sb.Append("`");
         }
 
+        // extension to original
+        public void SmallFont(string text)
+        {
+            sb.Append("<span style='font-size:small;'>");
+            sb.Append(text);
+            sb.Append("</span>");
+        }
+
         public void Table(string[] headers, IEnumerable<string[]> items)
         {
             sb.Append("| ");

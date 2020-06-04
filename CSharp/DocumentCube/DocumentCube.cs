@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using MarkdownWikiGenerator;
 using System.IO;
-using System.Text.RegularExpressions;
 using Microsoft.AnalysisServices.Tabular;
 
 namespace DocumentCube
@@ -24,10 +22,12 @@ namespace DocumentCube
 
                     mdb.Header(1, db.Name + " Documentation");
 
-
+                    mdb.Header(2, "Table of Contents");
                     mdb.ListLink("Tables", "#Tables");
                     mdb.ListLink("Measures", "#Measures");
+                    mdb.ListLink("Calculation Groups", "#Calculation-Groups");
                     mdb.ListLink("DAX Expressions", "#DAX-Expressions");
+                    mdb.ListLink("Roles", "#Roles");
 
                     Model m = db.Model;
 
@@ -56,7 +56,7 @@ namespace DocumentCube
                             if (col.SortByColumn == null)
                                 row[6] = "";
                             else
-                                row[6] = col.SortByColumn.ToString();
+                                row[6] = col.SortByColumn.Name;
                             row[7] = col.Type.ToString();
                             row[8] = col.IsKey.ToString();
                             row[9] = col.IsUnique.ToString();
@@ -93,64 +93,71 @@ namespace DocumentCube
 
                         mdb.Table(headers, rows);
                     }
+
                     mdb.AppendLine();
-                    mdb.Header(1, "DAX Expressions");
+                    mdb.Header(1, "Calculation Groups");
                     mdb.AppendLine();
-                    mdb.AppendLine("<hr>");
                     foreach (Table table in m.Tables)
                     {
-
+                        if (table.CalculationGroup != null)
+                        {
+                            foreach (CalculationItem calc in table.CalculationGroup.CalculationItems.OrderBy(x => x.Name))
+                            {
+                                mdb.AppendLine();
+                                mdb.Header(2, calc.Name);
+                                mdb.SmallFont(calc.Description);
+                                mdb.AppendLine();
+                                mdb.Code("DAX", calc.Expression);
+                                mdb.AppendLine();
+                            }
+                        }
+                    }
+                    
+                    mdb.AppendLine();
+                    mdb.Header(1, "DAX Expressions");
+                    
+                    mdb.AppendLine();
+                    foreach (Table table in m.Tables)
+                    {
                         foreach (Measure measure in table.Measures.OrderBy(x => x.Name))
                         {
                             mdb.AppendLine();
                             mdb.Header(2, measure.Name);
+                            mdb.SmallFont(measure.Description);
                             mdb.AppendLine();
                             mdb.Code("DAX", measure.Expression);
                             mdb.AppendLine();
-                            mdb.AppendLine("<hr>");
                         }
-
                     }
-                
-                
+
+                    mdb.AppendLine();
+                    mdb.Header(1, "Roles");
+                    mdb.AppendLine();
+                    foreach (ModelRole role in m.Roles.OrderBy(x => x.Name))
+                    {
+                        mdb.AppendLine();
+                        mdb.Header(2, role.Name);
+                        mdb.Header(3, "Table Permissions");
+                        foreach (TablePermission permission in role.TablePermissions.OrderBy(x => x.Table.Name))
+                        {
+                            mdb.Header(4, permission.Table.Name);
+                            mdb.Code("DAX", permission.FilterExpression);                            
+                        }
+                        mdb.Header(3, "Members");
+                        foreach (ModelRoleMember member in role.Members)
+                        {                            
+                            mdb.List(member.Name);
+                        }
+                        mdb.AppendLine();
+                    }
+
                     string filePath = Path.Combine(Properties.Settings.Default.OutputDir, db.Name + ".md");
                     File.WriteAllText(filePath, mdb.ToString());
-                    
                 }
 
                 svr.Disconnect();
-
-
             }
             Console.WriteLine("Done!");
-            //Console.ReadKey();
         }
-        
-
-        #region General Helper functions
-        private static string GetProjectDir()
-        {
-            return Path.GetDirectoryName(Path.GetDirectoryName(System.IO.Directory.GetCurrentDirectory()));
-        }
-
-        public static string SplitCamelCase(string str)
-        {
-            if (!str.Contains(" "))
-            {
-                string returnValue = Regex.Replace(
-                    Regex.Replace(
-                        str,
-                        @"(\P{Ll})(\P{Ll}\p{Ll})",
-                        "$1 $2"
-                    ),
-                    @"(\p{Ll})(\P{Ll})",
-                    "$1 $2"
-                );
-                return returnValue.Replace("_", "").Replace("  ", " ");
-            }
-            else
-                return str;
-        }
-        #endregion
     }
 }
