@@ -18,6 +18,11 @@ namespace DocumentCube
                 Database db = svr.Databases.FindByName(Properties.Settings.Default.AsDatabaseId);
                 if (db != null)
                 {
+                    int iMeasureCount = 0;
+                    int iCalcGroupMeasureCount = 0;
+                    int iVisibleAttributeCount = 0;
+                    int iHiddenAttributeCount = 0;
+
                     MarkdownBuilder mdb = new MarkdownBuilder();
 
                     mdb.Header(1, db.Name + " Documentation");
@@ -28,6 +33,7 @@ namespace DocumentCube
                     mdb.ListLink("Calculation Groups", "#Calculation-Groups");
                     mdb.ListLink("DAX Expressions", "#DAX-Expressions");
                     mdb.ListLink("Roles", "#Roles");
+                    mdb.ListLink("Summary", "#Summary");
 
                     Model m = db.Model;
 
@@ -62,6 +68,11 @@ namespace DocumentCube
                             row[9] = col.IsUnique.ToString();
 
                             rows.Add(row);
+
+                            if (col.IsHidden)
+                                iHiddenAttributeCount++;
+                            else
+                                iVisibleAttributeCount++;
                         }
                         mdb.Table(headers, rows);
                     }
@@ -109,6 +120,8 @@ namespace DocumentCube
                                 mdb.AppendLine();
                                 mdb.Code("DAX", calc.Expression);
                                 mdb.AppendLine();
+
+                                iCalcGroupMeasureCount++;
                             }
                         }
                     }
@@ -127,6 +140,8 @@ namespace DocumentCube
                             mdb.AppendLine();
                             mdb.Code("DAX", measure.Expression);
                             mdb.AppendLine();
+
+                            iMeasureCount++;
                         }
                     }
 
@@ -150,6 +165,19 @@ namespace DocumentCube
                         }
                         mdb.AppendLine();
                     }
+
+                    mdb.AppendLine();
+                    mdb.Header(1, "Summary");
+                    mdb.AppendLine();
+                    string msg = string.Format("The cube {0} now contains {1} measures and {2} calculation group expressions.  There are {3} visible attributes and {4} hidden attributes (keys etc.).", 
+                        db.Name,
+                        iMeasureCount,
+                        iCalcGroupMeasureCount,
+                        iVisibleAttributeCount,
+                        iHiddenAttributeCount
+                    );
+                    mdb.AppendLine(msg);
+
 
                     string filePath = Path.Combine(Properties.Settings.Default.OutputDir, db.Name + ".md");
                     File.WriteAllText(filePath, mdb.ToString());

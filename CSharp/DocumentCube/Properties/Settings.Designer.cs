@@ -25,7 +25,7 @@ namespace DocumentCube.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("localhost:57805")]
+        [global::System.Configuration.DefaultSettingValueAttribute("localhost")]
         public string AsServerName {
             get {
                 return ((string)(this["AsServerName"]));
@@ -34,7 +34,7 @@ namespace DocumentCube.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("db")]
+        [global::System.Configuration.DefaultSettingValueAttribute("EssentialsAccountsCube")]
         public string AsDatabaseId {
             get {
                 return ((string)(this["AsDatabaseId"]));
