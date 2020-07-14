@@ -19,6 +19,7 @@ namespace DocumentCube
                 if (db != null)
                 {
                     int iMeasureCount = 0;
+                    int iMeasureCountTM = 0;
                     int iCalcGroupMeasureCount = 0;
                     int iVisibleAttributeCount = 0;
                     int iHiddenAttributeCount = 0;
@@ -32,8 +33,13 @@ namespace DocumentCube
                     mdb.ListLink("Measures", "#Measures");
                     mdb.ListLink("Calculation Groups", "#Calculation-Groups");
                     mdb.ListLink("DAX Expressions", "#DAX-Expressions");
+                    mdb.ListLink("DAX for Time Metric Variants", "./" + db.Name + "TimeMetrics.md");
                     mdb.ListLink("Roles", "#Roles");
                     mdb.ListLink("Summary", "#Summary");
+
+                    MarkdownBuilder mdbTM = new MarkdownBuilder();
+                    mdbTM.Header(1, db.Name + " Time Calcs");
+                    mdbTM.AppendLine("This file lists the automatically generated Time Calculations");
 
                     Model m = db.Model;
 
@@ -46,7 +52,7 @@ namespace DocumentCube
                         mdb.Header(2, table.Name);
                         mdb.AppendLine();
 
-                        string[] headers = new[] { "Column Name", "Description", "DisplayFolder", "DataType", "IsHidden", "FormatString", "SortByColumn", "Type", "IsKey", "IsUnique" };
+                        string[] headers = new[] { "Column Name", "Description", "Display Folder", "DataType", "IsHidden", "Format String", "Sort By Column", "Type", "IsKey", "IsUnique" };
 
                         List<string[]> rows = new List<string[]>();
 
@@ -79,30 +85,33 @@ namespace DocumentCube
                     mdb.AppendLine();
                     mdb.Header(1, "Measures");
                     {
-                        string[] headers = new[] { "Table Name", "Measure Name", "Description", "DisplayFolder", "DataType", "IsHidden", "FormatString" };
+                        string[] headers = new[] { "Display Folder", "Measure Name", "Description", "DataType", "IsHidden", "Format String" };
                         
                         List<string[]> rows = new List<string[]>();
+                        List<string[]> rowsTM = new List<string[]>();
 
                         foreach (Table table in m.Tables.OrderBy(x => x.Name))
                         {
 
-                            foreach (Measure measure in table.Measures.OrderBy(x => x.Name))
+                            foreach (Measure measure in table.Measures.OrderBy(x => x.DisplayFolder))
                             {
-                                string[] row = new string[7];
-                                row[0] = table.Name;
+                                string[] row = new string[6];
+                                row[0] = measure.DisplayFolder;
                                 row[1] = measure.Name;
                                 row[2] = measure.Description;
-                                row[3] = measure.DisplayFolder;
-                                row[4] = measure.DataType.ToString();
-                                row[5] = measure.IsHidden.ToString();
-                                row[6] = measure.FormatString;
-
-                                rows.Add(row);
+                                row[3] = measure.DataType.ToString();
+                                row[4] = measure.IsHidden.ToString();
+                                row[5] = measure.FormatString;
+                                if (measure.Description.Contains("Time Calc"))
+                                    rowsTM.Add(row);
+                                else
+                                    rows.Add(row);
                             }
 
                         }
 
                         mdb.Table(headers, rows);
+                        mdbTM.Table(headers, rowsTM);
                     }
 
                     mdb.AppendLine();
@@ -112,10 +121,12 @@ namespace DocumentCube
                     {
                         if (table.CalculationGroup != null)
                         {
+                            mdb.Header(2, "Calculation Group: " + table.Name);
+                            mdb.AppendLine();
                             foreach (CalculationItem calc in table.CalculationGroup.CalculationItems.OrderBy(x => x.Name))
                             {
                                 mdb.AppendLine();
-                                mdb.Header(2, calc.Name);
+                                mdb.Header(3, calc.Name);
                                 mdb.SmallFont(calc.Description);
                                 mdb.AppendLine();
                                 mdb.Code("DAX", calc.Expression);
@@ -130,18 +141,38 @@ namespace DocumentCube
                     mdb.Header(1, "DAX Expressions");
                     
                     mdb.AppendLine();
+
+                    string PrevDisplayFolder = string.Empty;
+
                     foreach (Table table in m.Tables)
                     {
-                        foreach (Measure measure in table.Measures.OrderBy(x => x.Name))
+                        foreach (Measure measure in table.Measures.OrderBy(x => x.DisplayFolder))
                         {
-                            mdb.AppendLine();
-                            mdb.Header(2, measure.Name);
-                            mdb.SmallFont(measure.Description);
-                            mdb.AppendLine();
-                            mdb.Code("DAX", measure.Expression);
-                            mdb.AppendLine();
-
-                            iMeasureCount++;
+                            if (measure.Description.Contains("Time Calc"))
+                            {
+                                mdbTM.AppendLine();
+                                mdbTM.Header(2, measure.Name);
+                                mdbTM.SmallFont(measure.Description);
+                                mdbTM.AppendLine();
+                                mdbTM.Code("DAX", measure.Expression);
+                                mdbTM.AppendLine();
+                                iMeasureCountTM++;
+                            }
+                            else
+                            { 
+                                if (PrevDisplayFolder != measure.DisplayFolder)
+                                {
+                                    mdb.Header(2, "Folder: " + measure.DisplayFolder);
+                                }
+                                mdb.AppendLine();
+                                mdb.Header(3, measure.Name);
+                                mdb.SmallFont(measure.Description);
+                                mdb.AppendLine();
+                                mdb.Code("DAX", measure.Expression);
+                                mdb.AppendLine();
+                                iMeasureCount++;
+                                PrevDisplayFolder = measure.DisplayFolder;
+                            }
                         }
                     }
 
@@ -169,18 +200,22 @@ namespace DocumentCube
                     mdb.AppendLine();
                     mdb.Header(1, "Summary");
                     mdb.AppendLine();
-                    string msg = string.Format("The cube {0} now contains {1} measures and {2} calculation group expressions.  There are {3} visible attributes and {4} hidden attributes (keys etc.).", 
+                    string msg = string.Format("The cube {0} now contains {2} calculation group expressions, {1} measures and {5} time metric variants.  There are {3} visible attributes and {4} hidden attributes (keys etc.).", 
                         db.Name,
                         iMeasureCount,
                         iCalcGroupMeasureCount,
                         iVisibleAttributeCount,
-                        iHiddenAttributeCount
+                        iHiddenAttributeCount,
+                        iMeasureCountTM
                     );
                     mdb.AppendLine(msg);
 
 
                     string filePath = Path.Combine(Properties.Settings.Default.OutputDir, db.Name + ".md");
                     File.WriteAllText(filePath, mdb.ToString());
+                    
+                    filePath = Path.Combine(Properties.Settings.Default.OutputDir, db.Name + "TimeMetrics.md");
+                    File.WriteAllText(filePath, mdbTM.ToString());
                 }
 
                 svr.Disconnect();
