@@ -15,6 +15,9 @@ namespace DocumentCube
             {
                 svr.Connect(Properties.Settings.Default.AsServerName);
 
+                string docName = "Essentials-Accounts-Cube-";
+                string releaseVersion = "v0.7.1";
+
                 Database db = svr.Databases.FindByName(Properties.Settings.Default.AsDatabaseId);
                 if (db != null)
                 {
@@ -24,22 +27,34 @@ namespace DocumentCube
                     int iVisibleAttributeCount = 0;
                     int iHiddenAttributeCount = 0;
 
+                    string MainFile = docName + releaseVersion + ".md";
+                    string MainDaxFile = docName + releaseVersion +  "_DAX.md";
+                    string TimeCalcsFile = docName + releaseVersion + "_TimeCalcs.md";
+
                     MarkdownBuilder mdb = new MarkdownBuilder();
 
-                    mdb.Header(1, db.Name + " Documentation");
+                    mdb.Header(1, "Documentation for " + db.Name + " " + releaseVersion);
 
                     mdb.Header(2, "Table of Contents");
                     mdb.ListLink("Tables", "#Tables");
                     mdb.ListLink("Measures", "#Measures");
-                    mdb.ListLink("Calculation Groups", "#Calculation-Groups");
-                    mdb.ListLink("DAX Expressions", "#DAX-Expressions");
-                    mdb.ListLink("DAX for Time Metric Variants", "./" + db.Name + "TimeMetrics.md");
+                    //mdb.ListLink("Calculation Groups", "#Calculation-Groups");
+
+                    mdb.ListLink("DAX Expressions", "./" + MainDaxFile);
+                    mdb.ListLink("DAX for Time Variants", "./" + TimeCalcsFile);
                     mdb.ListLink("Roles", "#Roles");
                     mdb.ListLink("Summary", "#Summary");
 
+                    MarkdownBuilder mdbDAX = new MarkdownBuilder();
+                    mdbDAX.Header(1, "DAX Expressions in " + db.Name + " " + releaseVersion);
+                    mdbDAX.AppendLine("This file lists the DAX for each hand-crafted measures. ");
+                    mdbDAX.Link("The DAX for the automatically generated Time Calculations can be found here", "./" + TimeCalcsFile);
+                    mdbDAX.AppendLine();
+
                     MarkdownBuilder mdbTM = new MarkdownBuilder();
-                    mdbTM.Header(1, db.Name + " Time Calcs");
+                    mdbTM.Header(1, "AutoGen Time Calcs in " + db.Name + " " + releaseVersion);
                     mdbTM.AppendLine("This file lists the automatically generated Time Calculations");
+
 
                     Model m = db.Model;
 
@@ -102,7 +117,8 @@ namespace DocumentCube
                                 row[3] = measure.DataType.ToString();
                                 row[4] = measure.IsHidden.ToString();
                                 row[5] = measure.FormatString;
-                                if (measure.Description.Contains("Time Calc"))
+                                var annotation = measure.Annotations.FirstOrDefault(x => x.Name == "AutoGen");
+                                if (annotation != null && annotation.Value == "TimeCalc")
                                     rowsTM.Add(row);
                                 else
                                     rows.Add(row);
@@ -114,28 +130,28 @@ namespace DocumentCube
                         mdbTM.Table(headers, rowsTM);
                     }
 
-                    mdb.AppendLine();
-                    mdb.Header(1, "Calculation Groups");
-                    mdb.AppendLine();
-                    foreach (Table table in m.Tables)
-                    {
-                        if (table.CalculationGroup != null)
-                        {
-                            mdb.Header(2, "Calculation Group: " + table.Name);
-                            mdb.AppendLine();
-                            foreach (CalculationItem calc in table.CalculationGroup.CalculationItems.OrderBy(x => x.Name))
-                            {
-                                mdb.AppendLine();
-                                mdb.Header(3, calc.Name);
-                                mdb.SmallFont(calc.Description);
-                                mdb.AppendLine();
-                                mdb.Code("DAX", calc.Expression);
-                                mdb.AppendLine();
+                    //mdb.AppendLine();
+                    //mdb.Header(1, "Calculation Groups");
+                    //mdb.AppendLine();
+                    //foreach (Table table in m.Tables)
+                    //{
+                    //    if (table.CalculationGroup != null)
+                    //    {
+                    //        mdb.Header(2, "Calculation Group: " + table.Name);
+                    //        mdb.AppendLine();
+                    //        foreach (CalculationItem calc in table.CalculationGroup.CalculationItems.OrderBy(x => x.Name))
+                    //        {
+                    //            mdb.AppendLine();
+                    //            mdb.Header(3, calc.Name);
+                    //            mdb.SmallFont(calc.Description);
+                    //            mdb.AppendLine();
+                    //            mdb.Code("DAX", calc.Expression);
+                    //            mdb.AppendLine();
 
-                                iCalcGroupMeasureCount++;
-                            }
-                        }
-                    }
+                    //            iCalcGroupMeasureCount++;
+                    //        }
+                    //    }
+                    //}
                     
                     mdb.AppendLine();
                     mdb.Header(1, "DAX Expressions");
@@ -148,7 +164,8 @@ namespace DocumentCube
                     {
                         foreach (Measure measure in table.Measures.OrderBy(x => x.DisplayFolder))
                         {
-                            if (measure.Description.Contains("Time Calc"))
+                            var annotation = measure.Annotations.FirstOrDefault(x => x.Name == "AutoGen");
+                            if (annotation != null && annotation.Value == "TimeCalc")
                             {
                                 mdbTM.AppendLine();
                                 mdbTM.Header(2, measure.Name);
@@ -162,14 +179,14 @@ namespace DocumentCube
                             { 
                                 if (PrevDisplayFolder != measure.DisplayFolder)
                                 {
-                                    mdb.Header(2, "Folder: " + measure.DisplayFolder);
+                                    mdbDAX.Header(2, "Folder: " + measure.DisplayFolder);
                                 }
-                                mdb.AppendLine();
-                                mdb.Header(3, measure.Name);
-                                mdb.SmallFont(measure.Description);
-                                mdb.AppendLine();
-                                mdb.Code("DAX", measure.Expression);
-                                mdb.AppendLine();
+                                mdbDAX.AppendLine();
+                                mdbDAX.Header(3, measure.Name);
+                                mdbDAX.SmallFont(measure.Description);
+                                mdbDAX.AppendLine();
+                                mdbDAX.Code("DAX", measure.Expression);
+                                mdbDAX.AppendLine();
                                 iMeasureCount++;
                                 PrevDisplayFolder = measure.DisplayFolder;
                             }
@@ -211,10 +228,13 @@ namespace DocumentCube
                     mdb.AppendLine(msg);
 
 
-                    string filePath = Path.Combine(Properties.Settings.Default.OutputDir, db.Name + ".md");
+                    string filePath = Path.Combine(Properties.Settings.Default.OutputDir, MainFile);
                     File.WriteAllText(filePath, mdb.ToString());
-                    
-                    filePath = Path.Combine(Properties.Settings.Default.OutputDir, db.Name + "TimeMetrics.md");
+
+                    filePath = Path.Combine(Properties.Settings.Default.OutputDir, MainDaxFile);
+                    File.WriteAllText(filePath, mdbDAX.ToString());
+
+                    filePath = Path.Combine(Properties.Settings.Default.OutputDir, TimeCalcsFile);
                     File.WriteAllText(filePath, mdbTM.ToString());
                 }
 
