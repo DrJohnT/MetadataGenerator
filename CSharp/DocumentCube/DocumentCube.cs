@@ -11,12 +11,17 @@ namespace DocumentCube
     {
         static void Main(string[] args)
         {
+
+            Console.WriteLine("\n\nDid you change the version number in app.config?");
+            Console.WriteLine("\n\nPress any key to continue to generate - or click X in corner of this dialog to EXIT");
+            Console.ReadKey();
+
             using (Server svr = new Server())
             {
                 svr.Connect(Properties.Settings.Default.AsServerName);
 
                 string docName = "Essentials-Accounts-Cube-";
-                string releaseVersion = "v0.7.1";
+                string releaseVersion = "v" + Properties.Settings.Default.VersionNumber;
 
                 Database db = svr.Databases.FindByName(Properties.Settings.Default.AsDatabaseId);
                 if (db != null)

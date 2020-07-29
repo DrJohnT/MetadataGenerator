@@ -25,7 +25,7 @@ namespace DocumentCube.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("localhost")]
+        [global::System.Configuration.DefaultSettingValueAttribute("asazure://northeurope.asazure.windows.net/acemnpuimtaas01")]
         public string AsServerName {
             get {
                 return ((string)(this["AsServerName"]));
@@ -47,6 +47,15 @@ namespace DocumentCube.Properties {
         public string OutputDir {
             get {
                 return ((string)(this["OutputDir"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.7.2")]
+        public string VersionNumber {
+            get {
+                return ((string)(this["VersionNumber"]));
             }
         }
     }
