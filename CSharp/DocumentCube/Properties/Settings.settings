@@ -6,13 +6,13 @@
       <Value Profile="(Default)">asazure://northeurope.asazure.windows.net/acemnpuimtaas01</Value>
     </Setting>
     <Setting Name="AsDatabaseId" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">EssentialsAccountsCube</Value>
+      <Value Profile="(Default)">EssentialsAccountsCubeQA</Value>
     </Setting>
     <Setting Name="OutputDir" Type="System.String" Scope="Application">
       <Value Profile="(Default)">C:\Dev\EssentialsAccounts\Documentation\Wiki\Cube-Documentation</Value>
     </Setting>
     <Setting Name="VersionNumber" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">0.7.2</Value>
+      <Value Profile="(Default)">0.7.3</Value>
     </Setting>
   </Settings>
 </SettingsFile>

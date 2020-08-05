@@ -53,7 +53,7 @@ namespace DocumentCube
                     MarkdownBuilder mdbDAX = new MarkdownBuilder();
                     mdbDAX.Header(1, "DAX Expressions in " + db.Name + " " + releaseVersion);
                     mdbDAX.AppendLine("This file lists the DAX for each hand-crafted measures. ");
-                    mdbDAX.Link("The DAX for the automatically generated Time Calculations can be found here", "./" + TimeCalcsFile);
+                    mdbDAX.Link("The list of automatically generated Time Calculations can be found here", "./" + TimeCalcsFile);
                     mdbDAX.AppendLine();
 
                     MarkdownBuilder mdbTM = new MarkdownBuilder();
@@ -172,12 +172,12 @@ namespace DocumentCube
                             var annotation = measure.Annotations.FirstOrDefault(x => x.Name == "AutoGen");
                             if (annotation != null && annotation.Value == "TimeCalc")
                             {
-                                mdbTM.AppendLine();
-                                mdbTM.Header(2, measure.Name);
-                                mdbTM.SmallFont(measure.Description);
-                                mdbTM.AppendLine();
-                                mdbTM.Code("DAX", measure.Expression);
-                                mdbTM.AppendLine();
+                                //mdbTM.AppendLine();
+                                //mdbTM.Header(2, measure.Name);
+                                //mdbTM.SmallFont(measure.Description);
+                                //mdbTM.AppendLine();
+                                //mdbTM.Code("DAX", measure.Expression);
+                                //mdbTM.AppendLine();
                                 iMeasureCountTM++;
                             }
                             else

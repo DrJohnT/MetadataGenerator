@@ -34,7 +34,7 @@ namespace DocumentCube.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("EssentialsAccountsCube")]
+        [global::System.Configuration.DefaultSettingValueAttribute("EssentialsAccountsCubeQA")]
         public string AsDatabaseId {
             get {
                 return ((string)(this["AsDatabaseId"]));
@@ -52,7 +52,7 @@ namespace DocumentCube.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0.7.2")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.7.3")]
         public string VersionNumber {
             get {
                 return ((string)(this["VersionNumber"]));
