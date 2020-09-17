@@ -12,7 +12,7 @@ namespace DocumentCube.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.6.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.7.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -34,7 +34,7 @@ namespace DocumentCube.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("EssentialsAccountsCubeQA")]
+        [global::System.Configuration.DefaultSettingValueAttribute("EssentialsAccountsCubeUAT_PBI_2")]
         public string AsDatabaseId {
             get {
                 return ((string)(this["AsDatabaseId"]));
@@ -52,7 +52,7 @@ namespace DocumentCube.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0.7.3")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.7.8")]
         public string VersionNumber {
             get {
                 return ((string)(this["VersionNumber"]));

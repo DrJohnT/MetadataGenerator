@@ -91,8 +91,12 @@ where A.DatabaseUse = 'TARGET' and B.DatabaseName = '{0}'
 
                     if (table.DatabaseObjectName.StartsWith("Fact"))
                     {
-
-                        TemplateCommon.StandardInsertSP(table, dirLoadProcs, LoadingSchema, null);
+                        // if we have a primary key in the fact table, then use simple merge template, otherwise use truncate and load
+                        int iCount = table.Columns.Where(column => column.IsPrimaryKey == true).Count();
+                        if (iCount > 0)
+                            TemplateCommon.SimpleMergeSP(table, dirLoadProcs, LoadingSchema, null);
+                        else
+                            TemplateCommon.StandardInsertSP(table, dirLoadProcs, LoadingSchema, null);
 
                     }
 

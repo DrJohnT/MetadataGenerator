@@ -153,7 +153,7 @@ namespace Generator
                         {
                             conn.Open();
                             EssentialsAccountsDB.CreateObjectsFromMetadata(conn);
-                            Console.WriteLine("\nIgnoring Staging tables!");
+                            //Console.WriteLine("\nIgnoring Staging tables!");
                             EssentialsAccountsSTG.CreateObjectsFromMetadata(conn, false);                           
                         }
                         Console.WriteLine("\nTables, Views and Stored Procs Created!");
