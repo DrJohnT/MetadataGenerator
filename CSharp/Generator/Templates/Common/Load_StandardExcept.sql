@@ -1,5 +1,7 @@
 create procedure [{0}].[Load_{4}{1}]
-    @LoadLogId bigint
+	@LoadLogId bigint,
+	@BatchId int = null,
+	@LoadGroup int = null
 as 
 begin
 	/* 
@@ -20,7 +22,9 @@ begin
     exec Logging.Log_ProcedureCall 
 		@LoadLogId=@LoadLogId, 
 		@ProcedureObjectID=@@PROCID, 
-		@ActionType=N'START';
+		@ActionType=N'START',
+		@BatchId = @BatchId,
+		@LoadGroup = @LoadGroup;
 	
 	begin try
 
@@ -46,7 +50,9 @@ begin
 		exec Logging.Log_ProcedureCall 
 			@LoadLogId=@LoadLogId, 
 			@ProcedureObjectID=@@PROCID, 
-			@ActionType=N'ERROR';
+			@ActionType=N'ERROR',
+			@BatchId = @BatchId,
+			@LoadGroup = @LoadGroup;
 
 		throw 50000, @errorMsg, 16;
 
@@ -58,5 +64,7 @@ begin
 		@ActionType=N'END', 
 		@CountOfInsertedRows = @CountOfInsertedRows,
 		@CountOfUpdatedRows = @CountOfUpdatedRows,
-		@CountOfDeletedRows = @CountOfDeletedRows;
+		@CountOfDeletedRows = @CountOfDeletedRows,
+		@BatchId = @BatchId,
+		@LoadGroup = @LoadGroup;
 end	

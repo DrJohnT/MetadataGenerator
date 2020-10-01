@@ -82,25 +82,37 @@ where A.DatabaseUse = 'TARGET' and B.DatabaseName = '{0}'
                         column.DatabaseColumnSortOrder = "1" + column.DatabaseColumnName;
                     }
 
-                    if (!staticDims.Contains(table.DatabaseObjectName) && (table.DatabaseObjectName.StartsWith("Dim") || table.DatabaseObjectName.StartsWith("Sec")))
+                    if (!staticDims.Contains(table.DatabaseObjectName) && (
+                        (table.DatabaseObjectName.StartsWith("Dim") || table.DatabaseObjectName.StartsWith("Security"))
+                    ))
                     {
-                       
-                       TemplateCommon.StandardMergeSP(table, dirLoadProcs, LoadingSchema, null);
-                      
+                        // if we have a primary key in the table, then use standard merge template, otherwise use truncate and load
+                        int iCount = table.Columns.Where(column => column.IsPrimaryKey == true).Count();
+                        if (iCount > 0)
+                            TemplateCommon.StandardMergeSP(table, dirLoadProcs, LoadingSchema, null);
+                        else
+                            TemplateCommon.StandardInsertSP(table, dirLoadProcs, LoadingSchema, null);
                     }
 
+                    
+                    
                     if (table.DatabaseObjectName.StartsWith("Fact"))
                     {
                         // if we have a primary key in the fact table, then use simple merge template, otherwise use truncate and load
                         int iCount = table.Columns.Where(column => column.IsPrimaryKey == true).Count();
                         if (iCount > 0)
-                            TemplateCommon.SimpleMergeSP(table, dirLoadProcs, LoadingSchema, null);
+                            TemplateCommon.StandardMergeSP(table, dirLoadProcs, LoadingSchema, null);
                         else
                             TemplateCommon.StandardInsertSP(table, dirLoadProcs, LoadingSchema, null);
 
                     }
 
+                    if ( table.DatabaseObjectName.StartsWith("Ref") || table.DatabaseObjectName.StartsWith("Bridge"))
                     {
+                        TemplateCommon.StandardInsertSP(table, dirLoadProcs, LoadingSchema, null);
+                    }
+
+                {
                     IEnumerable<DatabaseColumn> loadViewFilteredColumns = table.Columns;
                         //.Where(column => (column.DatabaseColumnName.ToLower() != DatabaseObject.updatedloadlogid) &&
                           // column.DatabaseColumnName.ToLower().EndsWith("key") && !column.IsIdentity);
@@ -142,7 +154,10 @@ where A.DatabaseUse = 'TARGET' and B.DatabaseName = '{0}'
 
                 foreach (DatabaseObject table in dm.Objects.Where(x => x.SchemaName.ToUpper() == LookupSchema.ToUpper() && x.DatabaseObjectType.Trim().ToUpper() == "U"))
                 {
-                    TemplateCommon.StandardMergeSP(table, dirLookupProcs, LookupSchema, "lookup");
+                    if (table.DatabaseObjectName.StartsWith("Bridge"))                    
+                        TemplateCommon.StandardInsertSP(table, dirLookupProcs, LookupSchema, "lookup");
+                    else
+                        TemplateCommon.StandardMergeSP(table, dirLookupProcs, LookupSchema, "lookup");
                 }
 
                 Console.WriteLine("Done all " + DatabaseName);
