@@ -122,8 +122,8 @@ namespace DocumentCube
                                 row[3] = measure.DataType.ToString();
                                 row[4] = measure.IsHidden.ToString();
                                 row[5] = measure.FormatString;
-                                var annotation = measure.Annotations.FirstOrDefault(x => x.Name == "AutoGen");
-                                if (annotation != null && annotation.Value == "TimeCalc")
+                                //var annotation = measure.Annotations.FirstOrDefault(x => x.Name == "AutoGen");
+                                if (measure.Description == "TimeCalc")
                                     rowsTM.Add(row);
                                 else
                                     rows.Add(row);
@@ -169,8 +169,8 @@ namespace DocumentCube
                     {
                         foreach (Measure measure in table.Measures.OrderBy(x => x.DisplayFolder))
                         {
-                            var annotation = measure.Annotations.FirstOrDefault(x => x.Name == "AutoGen");
-                            if (annotation != null && annotation.Value == "TimeCalc")
+                            //var annotation = measure.Annotations.FirstOrDefault(x => x.Name == "AutoGen");
+                            if (measure.Description == "TimeCalc")
                             {
                                 //mdbTM.AppendLine();
                                 //mdbTM.Header(2, measure.Name);
