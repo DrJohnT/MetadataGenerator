@@ -12,7 +12,7 @@ namespace Generator.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "14.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.8.1.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -25,20 +25,20 @@ namespace Generator.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=SZRH5390;Initial Catalog=DWH_Metadata;Integrated Security=True")]
-        public string MetadataDatabase {
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Dev\\Output")]
+        public string OutputDirectory {
             get {
-                return ((string)(this["MetadataDatabase"]));
+                return ((string)(this["OutputDirectory"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Dev\\Output")]
-        public string OutputDirectory {
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=localhost;Initial Catalog=MetadataDB;Integrated Security=True")]
+        public string MetadataDatabase {
             get {
-                return ((string)(this["OutputDirectory"]));
+                return ((string)(this["MetadataDatabase"]));
             }
         }
     }

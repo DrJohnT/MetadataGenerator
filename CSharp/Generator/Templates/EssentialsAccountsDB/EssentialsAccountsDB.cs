@@ -83,7 +83,8 @@ where A.DatabaseUse = 'TARGET' and B.DatabaseName = '{0}'
                     }
 
                     if (!staticDims.Contains(table.DatabaseObjectName) && (
-                        (table.DatabaseObjectName.StartsWith("Dim") || table.DatabaseObjectName.StartsWith("Security") || table.DatabaseObjectName.StartsWith("Active"))
+                        (table.DatabaseObjectName.StartsWith("Dim") || table.DatabaseObjectName.StartsWith("Security") 
+                        || table.DatabaseObjectName.StartsWith("Active") || table.DatabaseObjectName.StartsWith("Masked"))
                     ))
                     {
                         // if we have a primary key in the table, then use standard merge template, otherwise use truncate and load

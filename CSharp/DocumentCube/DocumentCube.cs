@@ -20,7 +20,7 @@ namespace DocumentCube
             {
                 svr.Connect(Properties.Settings.Default.AsServerName);
 
-                string docName = "Essentials-Accounts-Cube-";
+                string docName = "E4A-Tabular-Cube-";
                 string releaseVersion = "v" + Properties.Settings.Default.VersionNumber;
 
                 Database db = svr.Databases.FindByName(Properties.Settings.Default.AsDatabaseId);
