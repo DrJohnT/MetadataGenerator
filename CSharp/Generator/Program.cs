@@ -13,6 +13,7 @@ namespace Generator
             UpdateAndRegen,
             UpdateMetadataFromDeployedDatabases,
             CreateTablesViewsAndStoredProcsFromMetadata,
+            CreateStagingTables,
             All,
             InvalidSelection,
             Ignore
@@ -45,6 +46,10 @@ namespace Generator
 
                         case "UpdateMetadataFromDeployedDatabases":
                             action = Action.UpdateMetadataFromDeployedDatabases;
+                            break;
+
+                        case "CreateStagingTables":
+                            action = Action.CreateStagingTables;
                             break;
 
                         case "CreateTablesViewsAndStoredProcsFromMetadata":
@@ -103,6 +108,16 @@ namespace Generator
                         Console.WriteLine("Updating Metadata with specific column lookups");
                         ImportDatabaseMetadata.UpdateMetadataWithSpecificColumnLookups();
                         Console.WriteLine("Source Database Metadata Imported!");
+                        break;
+
+                    case Action.CreateStagingTables:
+                        Console.WriteLine("Creating Staging Tables");
+                        using (SqlConnection conn = new SqlConnection(Generator.Properties.Settings.Default.MetadataDatabase))
+                        {
+                            conn.Open();
+                            StubSourceTarget.CreateStagingTablesFromMetadata(conn);
+                        }
+                        Console.WriteLine("\nStaging Tables!");
                         break;
 
                     case Action.UpdateAndRegen:

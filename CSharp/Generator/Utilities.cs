@@ -54,6 +54,7 @@ namespace Generator
             sb.InitialCatalog = database.DatabaseName;
             sb.DataSource = database.ServerName;
             sb.IntegratedSecurity = true;
+            sb.ConnectTimeout = 30;
             return sb.ConnectionString;
         }
 

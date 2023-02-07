@@ -12,7 +12,7 @@ namespace DocumentCube.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.7.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.10.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -34,7 +34,7 @@ namespace DocumentCube.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("EssentialsAccountsCubeQA2")]
+        [global::System.Configuration.DefaultSettingValueAttribute("EssentialsAccountsCubeUAT")]
         public string AsDatabaseId {
             get {
                 return ((string)(this["AsDatabaseId"]));
@@ -43,7 +43,8 @@ namespace DocumentCube.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Dev\\EssentialsAccounts\\Documentation\\Wiki\\Cube-Documentation")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Dev\\Finance.R15Y.wiki\\Essentials-for-Accounts\\E4A-Release-Notes\\E4A-Tabular-Cu" +
+            "be")]
         public string OutputDir {
             get {
                 return ((string)(this["OutputDir"]));
@@ -52,7 +53,7 @@ namespace DocumentCube.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0.7.10")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1.4")]
         public string VersionNumber {
             get {
                 return ((string)(this["VersionNumber"]));

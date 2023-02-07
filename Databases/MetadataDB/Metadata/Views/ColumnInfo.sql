@@ -12,6 +12,7 @@ SELECT
 	T.DatabaseObjectName, 
 	DatabaseColumnId, 
 	DatabaseColumnName, 
+	IsPrimaryKey,
 	IsIdentity, 
 	IsNullable, 
 	DataType, 

@@ -81,6 +81,7 @@
     <Compile Include="DataModel\IDatabaseColumn.cs" />
     <Compile Include="DataModel\IDatabaseObject.cs" />
     <Compile Include="Templates\EssentialsAccountsDB\EssentialsAccountsDB.cs" />
+    <Compile Include="Templates\StubSourceTarget\StubSourceTarget.cs" />
     <Compile Include="Templates\EssentialsAccountsSTG\EssentialsAccountsSTG.cs" />
     <Compile Include="NamingCleanup.cs" />
     <Compile Include="ImportDatabaseMetadata.cs" />

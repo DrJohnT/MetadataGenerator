@@ -20,6 +20,7 @@ namespace Generator
         private const string TableSchema = "eaDataMart";
         private const string DataMartSchema = "eaDataMart";
         private const string CubeSchema = "eaCubeView";
+        private const string CubeLoadSchema = "eaCubeLoad";
         private const string StagingAreaSchema = "stgMdfl";        
 
         public static void CreateObjectsFromMetadata(SqlConnection conn)
@@ -62,6 +63,8 @@ where A.DatabaseUse = 'TARGET' and B.DatabaseName = '{0}'
 
                 DirectoryInfo dirCubeViews = Utilities.GetAndCleanOutputDir(DatabaseName, CubeSchema, "Views");
 
+                DirectoryInfo dirCubeLoad = Utilities.GetAndCleanOutputDir(DatabaseName, CubeLoadSchema, "Stored Procedures");
+
                 DirectoryInfo dirExtractViews = Utilities.GetAndCleanOutputDir(DatabaseName, ExtractSchema, "Views");
                 
                 string checkInsertViewsSP = string.Empty;
@@ -84,7 +87,9 @@ where A.DatabaseUse = 'TARGET' and B.DatabaseName = '{0}'
 
                     if (!staticDims.Contains(table.DatabaseObjectName) && (
                         (table.DatabaseObjectName.StartsWith("Dim") || table.DatabaseObjectName.StartsWith("Security") 
-                        || table.DatabaseObjectName.StartsWith("Active") || table.DatabaseObjectName.StartsWith("Masked"))
+                        || table.DatabaseObjectName.StartsWith("Active") || table.DatabaseObjectName.StartsWith("Masked")
+                        || table.DatabaseObjectName.StartsWith("Ref") 
+                        )
                     ))
                     {
                         // if we have a primary key in the table, then use standard merge template, otherwise use truncate and load
@@ -108,13 +113,13 @@ where A.DatabaseUse = 'TARGET' and B.DatabaseName = '{0}'
 
                     }
 
-                    if ( table.DatabaseObjectName.StartsWith("Ref") || table.DatabaseObjectName.StartsWith("Bridge"))
+                    if ( table.DatabaseObjectName.StartsWith("Bridge"))
                     {
                         TemplateCommon.StandardInsertSP(table, dirLoadProcs, LoadingSchema, null);
                     }
 
-                {
-                    IEnumerable<DatabaseColumn> loadViewFilteredColumns = table.Columns;
+                    {
+                        IEnumerable<DatabaseColumn> loadViewFilteredColumns = table.Columns;
                         //.Where(column => (column.DatabaseColumnName.ToLower() != DatabaseObject.updatedloadlogid) &&
                           // column.DatabaseColumnName.ToLower().EndsWith("key") && !column.IsIdentity);
 
@@ -130,11 +135,8 @@ where A.DatabaseUse = 'TARGET' and B.DatabaseName = '{0}'
 
                         // DataMart views
                         CreateDataMartView(table, dirDataMartViews, DataMartSchema, table.GetViewColumnListSql(dataMartViewFilteredColumns));
-
-                        // cube views
-                        CreateDataMartView(table, dirCubeViews, CubeSchema, table.GetColumnListSql(dataMartViewFilteredColumns));
                     }
-
+                    
                     string[] excludeDimensions = { "" };
                     if (!excludeDimensions.Contains(table.DatabaseObjectName.ToLower()))
                     {
@@ -148,6 +150,16 @@ where A.DatabaseUse = 'TARGET' and B.DatabaseName = '{0}'
                             insertUnknowns += InsertUnknowns(LoadingSchema, table);
                     }
                 }
+
+                foreach (DatabaseObject table in dm.Objects.Where(x => x.SchemaName.ToUpper() == CubeLoadSchema.ToUpper() && x.DatabaseObjectType.Trim().ToUpper() == "U"))
+                {                
+                    // cube load stored procs
+                    TemplateCommon.StandardInsertSP(table, dirCubeLoad, CubeLoadSchema, null);
+
+                    // cube views
+                    CreateDataMartView(table, dirCubeViews, CubeSchema, table.GetColumnListSql(table.Columns));
+                }
+
 
                 CheckInsertViews(dirLoadProcs, checkInsertViewsSP);
 

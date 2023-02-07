@@ -6,13 +6,13 @@
       <Value Profile="(Default)">asazure://northeurope.asazure.windows.net/acemnpuimtaas01</Value>
     </Setting>
     <Setting Name="AsDatabaseId" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">EssentialsAccountsCubeQA2</Value>
+      <Value Profile="(Default)">EssentialsAccountsCubeUAT</Value>
     </Setting>
     <Setting Name="OutputDir" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">C:\Dev\EssentialsAccounts\Documentation\Wiki\Cube-Documentation</Value>
+      <Value Profile="(Default)">C:\Dev\Finance.R15Y.wiki\Essentials-for-Accounts\E4A-Release-Notes\E4A-Tabular-Cube</Value>
     </Setting>
     <Setting Name="VersionNumber" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">0.7.10</Value>
+      <Value Profile="(Default)">1.4</Value>
     </Setting>
   </Settings>
 </SettingsFile>

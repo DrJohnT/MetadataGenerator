@@ -111,7 +111,8 @@ using
                 (@DatabaseUseIdSource, 6, 3, 'MR Portal', 'Markets UAM', 'MR_MPPortal_PRD', 'DEFRNCMPIMTSQ02.ey.net\INST2', null, 1),
                 (@DatabaseUseIdSource, 7, 3, 'MR Portal', 'Markets MM',  'MR_MMPortal_PRD', 'DEFRNCMPIMTSQ02.ey.net\INST2', null, 1),
                 (@DatabaseUseIdSource, 8, 3, 'MR Portal', 'Markets APP', 'MR_APP_LIVE', 'DEFRNCMPIMTSQ02.ey.net\INST2', null, 1),
-                (@DatabaseUseIdSource, 9, 4, 'COE',       'RA_COE',      'RA_COE_PRD',  N'DEFRNCMPIMTSQ12\INST2', null, 1)
+                (@DatabaseUseIdSource, 9, 4, 'COE',       'RA_COE',      'RA_COE_PRD',  N'DEFRNCMPIMTSQ12.ey.net\INST2', null, 1),
+                (@DatabaseUseIdSource, 10, 4, 'FR',       'FR',      'FR_FRODS_PRD',  N'DEFRNVMPIMTSQ29.EY.NET\INST1', null, 1)
             
             -- MDFL UAT
 
